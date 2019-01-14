@@ -14,15 +14,25 @@ namespace BluesotelRestAPI_NetCore.Controllers
     public class RoomsController: ControllerBase
     {
         private readonly IRoomService _roomService;
-        public RoomsController(IRoomService roomService)
+        private readonly IOpeningService _openingService;
+        public RoomsController(IRoomService roomService, IOpeningService openingService)
         {
             _roomService = roomService;
+            _openingService = openingService;
         }
 
-        [HttpGet(Name = nameof(GetRooms))]
-        public IActionResult GetRooms()
+        [HttpGet(Name = nameof(GetAllRooms))]
+        [ProducesResponseType(200)]
+        public async Task<ActionResult<Collection<Room>>> GetAllRooms()
         {
-            throw new NotImplementedException();
+            var rooms = await _roomService.GetRoomsAsnyc();
+            var collection = new Collection<Room>
+            {
+                Self = Link.ToCollection(nameof(GetAllRooms)),
+                Value = rooms.ToArray()
+            };
+
+            return collection;
         }
 
         // GET /rooms/{roomId}
@@ -37,5 +47,22 @@ namespace BluesotelRestAPI_NetCore.Controllers
 
             return room;
         }
+
+        // GET /rooms/openings
+        [HttpGet("openings", Name = nameof(GetAllRoomOpenings))]
+        [ProducesResponseType(200)]
+        public async Task<ActionResult<Collection<Opening>>> GetAllRoomOpenings()
+        {
+            var openings = await _openingService.GetOpeningsAsync();
+
+            var collection = new Collection<Opening>()
+            {
+                Self = Link.ToCollection(nameof(GetAllRoomOpenings)),
+                Value = openings.ToArray()
+            };
+
+            return collection;
+        }
+
     }
 }

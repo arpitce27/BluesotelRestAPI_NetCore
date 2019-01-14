@@ -18,6 +18,7 @@ using NSwag.AspNetCore;
 using BluesotelRestAPI_NetCore.Services;
 using AutoMapper;
 using BluesotelRestAPI_NetCore.Infrastructure;
+using Newtonsoft.Json;
 
 namespace BluesotelRestAPI_NetCore
 {
@@ -36,9 +37,13 @@ namespace BluesotelRestAPI_NetCore
         public void ConfigureServices(IServiceCollection services)
         {
             services.Configure<HotelInfo>(Configuration.GetSection("Info"));
+            services.Configure<HotelOptions>(Configuration);
 
-            // Adding the dependencies for created service classes
             services.AddScoped<IRoomService, DefaultRoomService>();
+            services.AddScoped<IOpeningService, DefaultOpeningService>();
+            services.AddScoped<IBookingService, DefaultBookingService>();
+            services.AddScoped<IDateLogicService, DefaultDateLogicService>();
+
 
             // Using InMemory Database
             services.AddDbContext<HotelApiDbContext>(options =>
@@ -51,10 +56,22 @@ namespace BluesotelRestAPI_NetCore
                 {
                     options.Filters.Add<JsonExceptionFilter>();
 
+                    // For rewritting the links which is returned from the controller class
+                    options.Filters.Add<LinkRewritingFilter>();
+
                     // For not redirecting the request from HTTP -> HTTPS
                     options.Filters.Add<RequiredHttpOrCloseAttribute>();
                 })
-                .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+                .SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
+                .AddJsonOptions(options =>
+                {
+                    // These should be the defaults, but we can be explicit:
+                    options.SerializerSettings.DateTimeZoneHandling = DateTimeZoneHandling.Utc;
+                    options.SerializerSettings.DateFormatHandling = DateFormatHandling.IsoDateFormat;
+                    options.SerializerSettings.DateParseHandling = DateParseHandling.DateTimeOffset;
+
+                });
+
             services.AddRouting(option => option.LowercaseUrls = true);
 
             //Setting up the version for the APIs

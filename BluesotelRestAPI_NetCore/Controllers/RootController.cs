@@ -16,8 +16,8 @@ namespace BluesotelRestAPI_NetCore.Controllers
         {
             var response = new RootResponse
             {
-                Href = null,
-                Rooms = Link.To(nameof(RoomsController.GetRooms)),
+                Self = Link.To(nameof(GetRoot)),
+                Rooms = Link.ToCollection(nameof(RoomsController.GetAllRooms)),
                 Info = Link.To(nameof(InfoController.GetInfo))
             };
             return Ok(response);

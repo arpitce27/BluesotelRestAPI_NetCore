@@ -10,7 +10,7 @@ namespace BluesotelRestAPI_NetCore.Controllers
 {
     [Route("/[controller]")]
     [ApiController]
-    public class InfoController: ControllerBase
+    public class InfoController : ControllerBase
     {
         private readonly HotelInfo _hotelInfo;
         public InfoController(IOptions<HotelInfo> hoteinfoWrapper)
