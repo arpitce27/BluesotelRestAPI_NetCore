@@ -38,6 +38,7 @@ namespace BluesotelRestAPI_NetCore
         {
             services.Configure<HotelInfo>(Configuration.GetSection("Info"));
             services.Configure<HotelOptions>(Configuration);
+            services.Configure<PagingOptions>(Configuration.GetSection("DefaultPagingOptions"));
 
             services.AddScoped<IRoomService, DefaultRoomService>();
             services.AddScoped<IOpeningService, DefaultOpeningService>();
@@ -86,6 +87,15 @@ namespace BluesotelRestAPI_NetCore
 
             // Adding the automapper 
             services.AddAutoMapper(options => options.AddProfile<MappingProfile>());
+
+            services.Configure<ApiBehaviorOptions>(options =>
+            {
+                options.InvalidModelStateResponseFactory = context =>
+                {
+                    var errorResponse = new ApiError(context.ModelState);
+                    return new BadRequestObjectResult(errorResponse);
+                };
+            });
 
             // For allowing Cross origin request 
             services.AddCors(options =>

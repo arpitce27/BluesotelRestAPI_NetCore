@@ -19,7 +19,7 @@ namespace BluesotelRestAPI_NetCore.Services
             _dateLogicService = dateLogicService;
             _mapper = mapper;
         }
-        public async Task<IEnumerable<Opening>> GetOpeningsAsync()
+        public async Task<PagedResults<Opening>> GetOpeningsAsync(PagingOptions pagingOptions)
         {
             var rooms = await _context.Rooms.ToArrayAsync();
 
@@ -53,7 +53,15 @@ namespace BluesotelRestAPI_NetCore.Services
                 allOpenings.AddRange(openings);
             }
 
-            return allOpenings;
+            var pagedOpening = allOpenings
+                                .Skip(pagingOptions.Offset.Value)
+                                .Take(pagingOptions.Limit.Value);
+
+            return new PagedResults<Opening>()
+            {
+                Items = pagedOpening,
+                TotalSize = allOpenings.Count()
+            };
         }
 
         public async Task<IEnumerable<BookingRange>> GetConflictingSlots(

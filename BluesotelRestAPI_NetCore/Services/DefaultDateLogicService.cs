@@ -24,8 +24,7 @@ namespace BluesotelRestAPI_NetCore.Services
 
         public DateTimeOffset AlignStartTime(DateTimeOffset original)
         {
-            var dateInServerOffset = original.ToOffset(
-                TimeSpan.FromHours(_hotelOptions.UtcOffsetHours));
+            var dateInServerOffset = original.ToOffset(TimeSpan.FromHours(_hotelOptions.UtcOffsetHours));
             return new DateTimeOffset(
                 dateInServerOffset.Year,
                 dateInServerOffset.Month,
@@ -34,9 +33,7 @@ namespace BluesotelRestAPI_NetCore.Services
                 dateInServerOffset.Offset);
         }
 
-        public IEnumerable<BookingRange> GetAllSlots(
-            DateTimeOffset start,
-            DateTimeOffset? end = null)
+        public IEnumerable<BookingRange> GetAllSlots(DateTimeOffset start, DateTimeOffset? end = null)
         {
             var newStart = AlignStartTime(start);
 

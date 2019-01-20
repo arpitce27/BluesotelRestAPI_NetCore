@@ -9,6 +9,7 @@ namespace BluesotelRestAPI_NetCore.Services
     public interface IRoomService
     {
         Task<Room> GetRoomAsync(Guid id);
-        Task<IEnumerable<Room>> GetRoomsAsnyc();
+
+        Task<PagedResults<Room>> GetRoomsAsnyc(PagingOptions options);
     }
 }

@@ -44,10 +44,18 @@ namespace BluesotelRestAPI_NetCore.Services
             return mapper.Map<Room>(entity);
         }
 
-        public async Task<IEnumerable<Room>> GetRoomsAsnyc()
+        public async Task<PagedResults<Room>> GetRoomsAsnyc(PagingOptions pagingOptions)
         {
-            var query = _context.Rooms.ProjectTo<Room>(_mappingConfiguration);
-            return await query.ToArrayAsync();
+            var allRooms = _context.Rooms.ProjectTo<Room>(_mappingConfiguration);
+
+            var pagedRoom = allRooms.Skip(pagingOptions.Offset.Value)
+                                .Take(pagingOptions.Limit.Value);
+
+            return new PagedResults<Room>()
+            {
+                Items = pagedRoom,
+                TotalSize = allRooms.Count()
+            };
         }
     }
 }
