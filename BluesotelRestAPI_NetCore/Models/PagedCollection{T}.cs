@@ -11,17 +11,7 @@ namespace BluesotelRestAPI_NetCore.Models
     {
 
         public static PagedCollection<T> Create(Link self, T[] items, int size, PagingOptions pagingOptions)
-            => new PagedCollection<T>
-            {
-                Self = self,
-                Value = items,
-                Offset = pagingOptions.Offset.Value,
-                Limit = pagingOptions.Limit.Value,
-                First = self,
-                Next = GetNextLink(self, size, pagingOptions),
-                Previous = GetPreviousLink(self, size, pagingOptions),
-                Last = GetLastLink(self, size, pagingOptions)
-            };
+            => Create<PagedCollection<T>>(self, items, size, pagingOptions);
 
         public static TResponse Create<TResponse>(
             Link self, T[] items, int size, PagingOptions pagingOptions)

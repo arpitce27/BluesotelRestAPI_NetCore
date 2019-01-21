@@ -10,6 +10,8 @@ namespace BluesotelRestAPI_NetCore.Services
     {
         Task<Room> GetRoomAsync(Guid id);
 
-        Task<PagedResults<Room>> GetRoomsAsnyc(PagingOptions options);
+        Task<PagedResults<Room>> GetRoomsAsnyc(
+            PagingOptions options, 
+            SortOptions<Room, RoomEntity> sortOptions);
     }
 }
